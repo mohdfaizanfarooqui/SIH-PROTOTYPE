@@ -1,4 +1,3 @@
-// WHO/EPA permissible limits (mg/L)
 const permissibleLimits = {
     lead: 0.01,
     mercury: 0.006,
@@ -10,7 +9,6 @@ const permissibleLimits = {
     nickel: 0.07
 };
 
-// Heavy Metal Pollution Index (HPI) Calculation
 function calculateHPI(metals) {
     let weightedSum = 0;
     let totalWeight = 0;
@@ -32,7 +30,6 @@ function calculateHPI(metals) {
     return totalWeight > 0 ? (weightedSum / totalWeight).toFixed(2) : '0.00';
 }
 
-// Heavy Metal Evaluation Index (HEI) Calculation
 function calculateHEI(metals) {
     let hei = 0;
     for (const [metal, concentration] of Object.entries(metals)) {
@@ -43,7 +40,6 @@ function calculateHEI(metals) {
     return hei.toFixed(2);
 }
 
-// Contamination Degree (Cd) Calculation
 function calculateContaminationDegree(metals) {
     let cd = 0;
     for (const [metal, concentration] of Object.entries(metals)) {
@@ -54,7 +50,6 @@ function calculateContaminationDegree(metals) {
     return cd.toFixed(2);
 }
 
-// Water Quality Status Classification
 function getWaterQualityStatus(hpi) {
     if (hpi < 15) return { text: 'Excellent', class: 'status-excellent' };
     if (hpi < 30) return { text: 'Good', class: 'status-good' };
@@ -62,7 +57,6 @@ function getWaterQualityStatus(hpi) {
     return { text: 'Very Poor', class: 'status-very-poor' };
 }
 
-// Health Risk Weight Factors
 function getHealthRiskWeight(metal) {
     const weights = {
         lead: 0.8, mercury: 0.9, cadmium: 0.7, arsenic: 0.8,
