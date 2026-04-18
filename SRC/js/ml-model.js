@@ -1,6 +1,3 @@
-// Machine Learning Model for Disease Prediction based on Heavy Metal Exposure
-// Uses TensorFlow.js for client-side prediction
-
 class DiseasePredictor {
     constructor() {
         this.model = null;
@@ -16,34 +13,28 @@ class DiseasePredictor {
             'Bone Disease'
         ];
         
-        // Training data based on medical literature and WHO guidelines
         this.trainingData = this.generateTrainingData();
         this.initializeModel();
     }
 
-    // Generate synthetic training data based on medical research
     generateTrainingData() {
         const data = [];
         
-        // Generate 1000 synthetic samples based on medical literature
         for (let i = 0; i < 1000; i++) {
             const sample = {
-                // Input features: metal concentrations (normalized)
                 features: [
-                    Math.random() * 0.1,    // lead (0-0.1 mg/L)
-                    Math.random() * 0.02,   // mercury (0-0.02 mg/L)
-                    Math.random() * 0.01,   // cadmium (0-0.01 mg/L)
-                    Math.random() * 0.05,   // arsenic (0-0.05 mg/L)
-                    Math.random() * 0.2,    // chromium (0-0.2 mg/L)
-                    Math.random() * 5.0,    // copper (0-5.0 mg/L)
-                    Math.random() * 10.0,   // zinc (0-10.0 mg/L)
-                    Math.random() * 0.3     // nickel (0-0.3 mg/L)
+                    Math.random() * 0.1,
+                    Math.random() * 0.02,
+                    Math.random() * 0.01,
+                    Math.random() * 0.05,
+                    Math.random() * 0.2,
+                    Math.random() * 5.0,
+                    Math.random() * 10.0,
+                    Math.random() * 0.3
                 ],
-                // Output labels: disease probabilities
                 labels: []
             };
             
-            // Calculate disease probabilities based on metal concentrations
             sample.labels = this.calculateDiseaseRisks(sample.features);
             data.push(sample);
         }
@@ -51,71 +42,36 @@ class DiseasePredictor {
         return data;
     }
 
-    // Calculate disease risks based on metal concentrations (based on medical literature)
     calculateDiseaseRisks(metalConcentrations) {
-        const [lead, mercury, cadmium, arsenic, chromium, copper, zinc, nickel] = metalConcentrations;
-        
-        // Permissible limits for normalization
         const limits = [0.01, 0.006, 0.003, 0.01, 0.05, 2.0, 3.0, 0.07];
-        
-        // Normalize concentrations
         const normalized = metalConcentrations.map((conc, i) => conc / limits[i]);
         
-        // Calculate disease probabilities based on research
         const risks = [
-            // Neurological Disorders (mainly lead, mercury)
             Math.min(0.95, (normalized[0] * 0.4 + normalized[1] * 0.5 + Math.random() * 0.1)),
-            
-            // Kidney Disease (cadmium, lead, mercury)
             Math.min(0.95, (normalized[2] * 0.4 + normalized[0] * 0.3 + normalized[1] * 0.2 + Math.random() * 0.1)),
-            
-            // Cardiovascular Disease (lead, arsenic)
             Math.min(0.95, (normalized[0] * 0.3 + normalized[3] * 0.4 + Math.random() * 0.3)),
-            
-            // Respiratory Issues (chromium, nickel)
             Math.min(0.95, (normalized[4] * 0.4 + normalized[7] * 0.3 + Math.random() * 0.3)),
-            
-            // Gastrointestinal Problems (copper, zinc)
             Math.min(0.95, (normalized[5] * 0.3 + normalized[6] * 0.2 + Math.random() * 0.5)),
-            
-            // Skin Disorders (arsenic, chromium, nickel)
             Math.min(0.95, (normalized[3] * 0.3 + normalized[4] * 0.2 + normalized[7] * 0.3 + Math.random() * 0.2)),
-            
-            // Cancer Risk (arsenic, cadmium, chromium)
             Math.min(0.95, (normalized[3] * 0.4 + normalized[2] * 0.3 + normalized[4] * 0.2 + Math.random() * 0.1)),
-            
-            // Bone Disease (cadmium, lead)
             Math.min(0.95, (normalized[2] * 0.4 + normalized[0] * 0.3 + Math.random() * 0.3))
         ];
         
-        return risks.map(risk => Math.max(0.01, risk)); // Minimum 1% baseline risk
+        return risks.map(risk => Math.max(0.01, risk));
     }
 
-    // Initialize TensorFlow.js model
     async initializeModel() {
         try {
-            // Create a neural network model
             this.model = tf.sequential({
                 layers: [
-                    tf.layers.dense({
-                        inputShape: [8], // 8 heavy metals
-                        units: 32,
-                        activation: 'relu'
-                    }),
+                    tf.layers.dense({ inputShape: [8], units: 32, activation: 'relu' }),
                     tf.layers.dropout({rate: 0.3}),
-                    tf.layers.dense({
-                        units: 16,
-                        activation: 'relu'
-                    }),
+                    tf.layers.dense({ units: 16, activation: 'relu' }),
                     tf.layers.dropout({rate: 0.2}),
-                    tf.layers.dense({
-                        units: 8, // 8 disease categories
-                        activation: 'sigmoid' // For multi-label classification
-                    })
+                    tf.layers.dense({ units: 8, activation: 'sigmoid' })
                 ]
             });
 
-            // Compile the model
             this.model.compile({
                 optimizer: tf.train.adam(0.001),
                 loss: 'binaryCrossentropy',
@@ -132,25 +88,21 @@ class DiseasePredictor {
         }
     }
 
-    // Train the model with synthetic data
     async trainModel() {
         try {
-            // Prepare training data
             const features = this.trainingData.map(d => d.features);
             const labels = this.trainingData.map(d => d.labels);
             
             const xs = tf.tensor2d(features);
             const ys = tf.tensor2d(labels);
             
-            // Train the model
             await this.model.fit(xs, ys, {
                 epochs: 50,
                 batchSize: 32,
                 validationSplit: 0.2,
-                verbose: 0 // Set to 1 to see training progress
+                verbose: 0
             });
             
-            // Clean up tensors
             xs.dispose();
             ys.dispose();
             
@@ -161,37 +113,30 @@ class DiseasePredictor {
         }
     }
 
-    // Predict disease risks for given metal concentrations
     async predictDiseaseRisk(metalConcentrations) {
         if (!this.isModelLoaded || !this.model) {
             return this.fallbackPrediction(metalConcentrations);
         }
         
         try {
-            // Normalize input data
             const limits = [0.01, 0.006, 0.003, 0.01, 0.05, 2.0, 3.0, 0.07];
             const normalizedInputs = metalConcentrations.map((conc, i) => 
-                Math.min(conc / limits[i], 10) // Cap at 10x the limit
+                Math.min(conc / limits[i], 10)
             );
             
-            // Make prediction
             const inputTensor = tf.tensor2d([normalizedInputs]);
             const predictions = this.model.predict(inputTensor);
             const predictionData = await predictions.data();
             
-            // Clean up tensors
             inputTensor.dispose();
             predictions.dispose();
             
-            // Format results
-            const results = this.diseases.map((disease, index) => ({
+            return this.diseases.map((disease, index) => ({
                 disease,
                 probability: Math.round(predictionData[index] * 100),
                 riskLevel: this.getRiskLevel(predictionData[index] * 100),
                 recommendations: this.getRecommendations(disease, predictionData[index] * 100)
             }));
-            
-            return results;
             
         } catch (error) {
             console.error('Error making prediction:', error);
@@ -199,7 +144,6 @@ class DiseasePredictor {
         }
     }
 
-    // Fallback prediction when ML model fails
     fallbackPrediction(metalConcentrations) {
         const risks = this.calculateDiseaseRisks(metalConcentrations);
         
@@ -211,7 +155,6 @@ class DiseasePredictor {
         }));
     }
 
-    // Determine risk level based on probability
     getRiskLevel(probability) {
         if (probability < 20) return { level: 'Low', class: 'status-excellent' };
         if (probability < 40) return { level: 'Moderate', class: 'status-good' };
@@ -219,7 +162,6 @@ class DiseasePredictor {
         return { level: 'Critical', class: 'status-very-poor' };
     }
 
-    // Get health recommendations based on disease and risk level
     getRecommendations(disease, probability) {
         const recommendations = {
             'Neurological Disorders': [
@@ -283,7 +225,6 @@ class DiseasePredictor {
         return baseRecommendations;
     }
 
-    // Get detailed health report
     generateHealthReport(metalConcentrations, predictions) {
         const overallRisk = Math.round(
             predictions.reduce((sum, pred) => sum + pred.probability, 0) / predictions.length
@@ -304,7 +245,6 @@ class DiseasePredictor {
         };
     }
 
-    // Identify metals exceeding safe limits
     identifyCriticalMetals(metalConcentrations) {
         const limits = [0.01, 0.006, 0.003, 0.01, 0.05, 2.0, 3.0, 0.07];
         const metalNames = ['Lead', 'Mercury', 'Cadmium', 'Arsenic', 'Chromium', 'Copper', 'Zinc', 'Nickel'];
@@ -319,7 +259,6 @@ class DiseasePredictor {
             .filter(metal => metal.concentration > metal.limit);
     }
 
-    // Get urgent actions based on predictions
     getUrgentActions(predictions) {
         const criticalPredictions = predictions.filter(pred => pred.probability > 60);
         
@@ -347,7 +286,6 @@ class DiseasePredictor {
         ];
     }
 
-    // Get follow-up schedule based on risk level
     getFollowUpSchedule(overallRisk) {
         if (overallRisk > 60) {
             return {
@@ -371,12 +309,9 @@ class DiseasePredictor {
     }
 }
 
-// Initialize the disease predictor
 let diseasePredictor;
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Only initialize if TensorFlow.js is available
     if (typeof tf !== 'undefined') {
         diseasePredictor = new DiseasePredictor();
     } else {
@@ -384,7 +319,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DiseasePredictor;
 }
