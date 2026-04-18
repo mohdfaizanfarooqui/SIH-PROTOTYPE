@@ -1,4 +1,3 @@
-// Chatbot functions
 function toggleChatbot() {
     const chatbot = document.getElementById('chatbot-window');
     chatbot.classList.toggle('active');
