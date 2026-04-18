@@ -1,6 +1,3 @@
-// Utility functions
-
-// Form validation
 function validateFormData() {
     const location = document.getElementById('location-name').value.trim();
     const lat = document.getElementById('latitude').value;
@@ -30,9 +27,7 @@ function validateFormData() {
     return true;
 }
 
-// Notification system
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
     document.querySelectorAll('.alert').forEach(alert => {
         if (alert.parentNode) {
             alert.parentNode.removeChild(alert);
@@ -69,7 +64,6 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Data formatting utilities
 function formatNumber(value, decimals = 2) {
     return parseFloat(value).toFixed(decimals);
 }
@@ -79,7 +73,6 @@ function formatDate(dateString) {
     return date.toLocaleDateString();
 }
 
-// CSV parsing utilities
 function escapeCSV(value) {
     if (typeof value !== 'string') return value;
     if (value.includes('"') || value.includes(',') || value.includes('\n')) {
@@ -88,7 +81,6 @@ function escapeCSV(value) {
     return value;
 }
 
-// Local storage utilities (for browsers that support it)
 function saveDataToLocal() {
     try {
         localStorage.setItem('hmpi-data', JSON.stringify(waterQualityData));
@@ -115,7 +107,6 @@ function loadDataFromLocal() {
     return false;
 }
 
-// Mathematical utilities
 function calculateAverage(values) {
     if (values.length === 0) return 0;
     return values.reduce((sum, val) => sum + val, 0) / values.length;
@@ -128,15 +119,13 @@ function calculateStandardDeviation(values) {
     return Math.sqrt(avgSquareDiff);
 }
 
-// Color utilities for pollution levels
 function getColorForPollutionLevel(hpi) {
-    if (hpi < 15) return '#2ecc71'; // Green
-    if (hpi < 30) return '#f39c12'; // Orange
-    if (hpi < 45) return '#e67e22'; // Dark Orange
-    return '#e74c3c'; // Red
+    if (hpi < 15) return '#2ecc71';
+    if (hpi < 30) return '#f39c12';
+    if (hpi < 45) return '#e67e22';
+    return '#e74c3c';
 }
 
-// Debounce utility for performance
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
