@@ -1,4 +1,3 @@
-// Initialize map
 function initializeMap() {
     map = L.map('map').setView([20.5937, 78.9629], 5);
     
@@ -13,7 +12,6 @@ function initializeMap() {
     });
 }
 
-// Update map markers
 function updateMapMarkers() {
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
@@ -42,7 +40,6 @@ function updateMapMarkers() {
     });
 }
 
-// Update location table
 function updateLocationTable() {
     const tbody = document.querySelector('#locations-table tbody');
     tbody.innerHTML = '';
@@ -88,7 +85,6 @@ function focusOnLocation(dataIndex) {
     }
 }
 
-// Leaderboard functions
 function updateLeaderboards() {
     updatePollutionLeaderboard();
     updateCleanLeaderboard();
